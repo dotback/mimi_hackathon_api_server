@@ -1,13 +1,12 @@
 {
   "name": "functions",
   "scripts": {
-
     "format": "biome format . --write",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start",
     "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
+    "start": "node dist/index.js",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "generate-openapi": "ts-node --project tsconfig.json -r tsconfig-paths/register --files src/libs/openapi/Generator.ts",
@@ -15,7 +14,8 @@
     "prisma:migrate:dev": "npx prisma migrate dev --schema ./src/libs/prisma/schema.prisma && npm run prisma:generate",
     "test": "jest",
     "test:api": "jest --config ./tests/jest.api.config.js",
-    "test:watch": "npm run test:api -- --watch"
+    "test:watch": "npm run test:api -- --watch",
+    "predeploy": "npm run prisma:generate && npm run build"
   },
   "engines": {
     "node": "18"
@@ -31,7 +31,8 @@
     "firebase-admin": "^13.0.2",
     "firebase-functions": "^6.2.0",
     "module-alias": "^2.2.3",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",

@@ -18,9 +18,25 @@ export abstract class BasicController<TRequest, TResponse, TResCode extends numb
   protected db: PrismaClient
 
   constructor(private readonly schema: ReqResSchema) {
-    initializeFirebase()
-    this.firebase = getFirebaseAdmin()
-    this.db = db
+    try {
+      console.log('Starting Firebase initialization')
+      
+      console.log('Current environment:', process.env.NODE_ENV)
+      
+      initializeFirebase()
+      
+      console.log('Firebase initialized successfully')
+      
+      this.firebase = getFirebaseAdmin()
+      console.log('Firebase admin retrieved')
+      
+      this.db = db
+      console.log('Database connection established')
+    } catch (error) {
+      console.error('Comprehensive Firebase initialization error:', {
+      })
+      throw error
+    }
   }
 
   protected async executeContainer(
