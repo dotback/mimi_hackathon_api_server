@@ -12,9 +12,7 @@
     "/users/profile": {
       "get": {
         "description": "Get user profile",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -28,14 +26,10 @@
                         "type": "string"
                       }
                     },
-                    "required": [
-                      "authorization"
-                    ]
+                    "required": ["authorization"]
                   }
                 },
-                "required": [
-                  "headers"
-                ]
+                "required": ["headers"]
               }
             }
           }
@@ -64,15 +58,10 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "id",
-                        "lastLoginAt"
-                      ]
+                      "required": ["id", "lastLoginAt"]
                     }
                   },
-                  "required": [
-                    "user"
-                  ]
+                  "required": ["user"]
                 }
               }
             }
@@ -92,14 +81,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -119,14 +104,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -146,14 +127,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -173,14 +150,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -200,14 +173,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -218,9 +187,7 @@
     "/hello": {
       "get": {
         "description": "Hello, World!",
-        "tags": [
-          "System"
-        ],
+        "tags": ["System"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -243,9 +210,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "required": ["message"]
                 }
               }
             }
@@ -265,14 +230,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -292,14 +253,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -319,14 +276,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -346,14 +299,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -373,14 +322,10 @@
                         },
                         "cause": {}
                       },
-                      "required": [
-                        "message"
-                      ]
+                      "required": ["message"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }

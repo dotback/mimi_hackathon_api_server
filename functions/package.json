@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "biome lint .",
+
     "format": "biome format . --write",
     "build": "tsc",
     "build:watch": "tsc --watch",
@@ -47,7 +47,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "type-fest": "^4.32.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.7.3"
   },
   "private": true,
   "volta": {
