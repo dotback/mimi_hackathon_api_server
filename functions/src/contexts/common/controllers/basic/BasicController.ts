@@ -1,5 +1,5 @@
 import { IncomingHttpHeaders } from 'node:http'
-import { getFirebaseAdmin, initializeFirebase } from '@mimi-api/configs/Firebase'
+import { getFirebaseAdmin } from '@mimi-api/configs/Firebase'
 import { IBasicController } from '@mimi-api/contexts/common/controllers/IBasicController'
 import { ReqResSchema } from '@mimi-api/contexts/common/controllers/types/ReqRes'
 import { NoAuthRequestContext, RequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
@@ -20,21 +20,18 @@ export abstract class BasicController<TRequest, TResponse, TResCode extends numb
   constructor(private readonly schema: ReqResSchema) {
     try {
       console.log('Starting Firebase initialization')
-      
+
       console.log('Current environment:', process.env.NODE_ENV)
-      
-      initializeFirebase()
-      
+
       console.log('Firebase initialized successfully')
-      
+
       this.firebase = getFirebaseAdmin()
       console.log('Firebase admin retrieved')
-      
+
       this.db = db
       console.log('Database connection established')
     } catch (error) {
-      console.error('Comprehensive Firebase initialization error:', {
-      })
+      console.error('Comprehensive Firebase initialization error:', error)
       throw error
     }
   }

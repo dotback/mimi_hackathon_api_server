@@ -1,7 +1,7 @@
 # MiMi API 開発ガイド
 
 ## 前提条件
-- Node.js v18
+- Node.js v22
 - Java Runtime Environment (Firebase Emulator用)
 - npm
 - Docker (ローカルDBの起動に使用)
@@ -21,21 +21,16 @@
 1. Firebase Toolsのインストール
     ```
     $ curl -sL https://firebase.tools | bash
-    $ firebase login # エミュレータ動かすだけならどこにログインしても良いはず...だけどmimiアカウント(mimi-dev)でログイン
+    $ firebase login # エミュレータ動かすだけならどこにログインしても良いはず
     ```
 
 1. プロジェクトのインストール
     ```
-    $ git clone git@github.com:uewtwo/firebase-functions-sample.git
-    $ cd firebase-functions-sample/functions
+    $ git clone git@github.com:dotback/mimi_hackathon_api_server.git
+    $ cd mimi_hackathon_api_server/functions
 
     # 依存関係のインストール
     $ npm install
-    ```
-
-1. 環境変数の設定
-    ```
-    $ cp .env.sample .env
     ```
 
 1. DBの設定

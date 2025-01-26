@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "sixth-arbor-448303-i3"
+    "production": "sixth-arbor-448303-i3",
+    "develop": "mimi-dev-c7ee3",
+    "local": "mimi-dev-c7ee3"
   }
 }

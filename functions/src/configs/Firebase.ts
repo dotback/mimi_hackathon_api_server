@@ -3,28 +3,19 @@ dotenv.config()
 
 import * as admin from 'firebase-admin'
 
+let firebaseApp: admin.app.App | undefined = undefined
 export function initializeFirebase() {
-  // console.log('FIREBASE_PROJECT_ID', process.env.FIREBASE_PROJECT_ID)
-  // console.log('AUTH_EMULATOR_HOST', process.env.AUTH_EMULATOR_HOST)
-  // console.log('FIRESTORE_EMULATOR_HOST', process.env.FIRESTORE_EMULATOR_HOST)
-  if (!admin.apps.length) {
-    const config: admin.AppOptions = {
-      projectId: process.env._FIREBASE_PROJECT_ID,
-    }
-    if (process.env.AUTH_EMULATOR_HOST) {
-      process.env.FIREBASE_AUTH_EMULATOR_HOST = process.env.AUTH_EMULATOR_HOST
-      admin.initializeApp(config)
-    } else {
-      // TODO: Initialize for production
-      // admin.initializeApp()
-    }
+  if (firebaseApp) {
+    return firebaseApp
   }
-  return admin
+  const config: admin.AppOptions = {
+    projectId: process.env.APP_FIREBASE_PROJECT_ID,
+    credential: admin.credential.applicationDefault(),
+  }
+  firebaseApp = admin.initializeApp(config)
+  return firebaseApp
 }
 
-export const getFirebaseAdmin = () => {
-  const admin = initializeFirebase()
-  return {
-    auth: admin.auth(),
-  }
-}
+export const getFirebaseAdmin = () => ({
+  auth: admin.auth(initializeFirebase()),
+})

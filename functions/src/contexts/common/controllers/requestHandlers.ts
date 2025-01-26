@@ -3,10 +3,11 @@ import cors from 'cors'
 import { onRequest } from 'firebase-functions/v2/https'
 
 const corsOptions = {
-  origin: '*',
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
+  optionsSuccessStatus: 204,
 }
 
 export const requestHandlers = (executors: {
@@ -15,63 +16,34 @@ export const requestHandlers = (executors: {
   put?: IBasicController
   delete?: IBasicController
 }) =>
-  onRequest((req, res) => {
-    // for preflight request
-    if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Origin', '*')
-      res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-      res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept')
-      res.set('Access-Control-Max-Age', '3600')
-      res.status(204).send('')
-      return
-    }
+  onRequest(
+    {
+      timeoutSeconds: 300,
+      invoker: 'public',
+      vpcConnector: 'mimi-api-vpc-connector',
+      vpcConnectorEgressSettings: 'PRIVATE_RANGES_ONLY',
+    },
+    async (req, res) => {
+      return cors(corsOptions)(req, res, async () => {
+        const makeAllowedMethods = () => {
+          const methods = Object.keys(executors).filter(
+            method => executors[method as keyof typeof executors] !== undefined,
+          )
+          return methods.join(', ')
+        }
 
-    cors(corsOptions)(req, res, () => {
-      const makeAllowedMethods = () => {
-        const methods = Object.keys(executors).filter(
-          method => executors[method as keyof typeof executors] !== undefined,
-        )
-        return methods.join(', ')
-      }
-      type ImplementedAllMethods = 'get' | 'post' | 'put' | 'delete'
-      const method = req.method.toLowerCase() as ImplementedAllMethods // a little bit dangerous assertion
-      switch (method) {
-        case 'get': {
-          if (executors.get === undefined) {
+        const method = req.method.toLowerCase() as keyof typeof executors
+        try {
+          const executor = executors[method]
+          if (!executor) {
             res.status(405).set('Allow', makeAllowedMethods()).send('Method Not Allowed')
             return
           }
-          executors.get.execute(req, res)
-          break
+          await executor.execute(req, res)
+        } catch (error) {
+          console.error('Error occurred in requestHandlers:', error)
+          res.status(500).send('Internal Server Error')
         }
-        case 'post': {
-          if (executors.post === undefined) {
-            res.status(405).set('Allow', makeAllowedMethods()).send('Method Not Allowed')
-            return
-          }
-          executors.post.execute(req, res)
-          break
-        }
-        case 'put': {
-          if (executors.put === undefined) {
-            res.status(405).set('Allow', makeAllowedMethods()).send('Method Not Allowed')
-            return
-          }
-          executors.put.execute(req, res)
-          break
-        }
-        case 'delete': {
-          if (executors.delete === undefined) {
-            res.status(405).set('Allow', makeAllowedMethods()).send('Method Not Allowed')
-            return
-          }
-          executors.delete.execute(req, res)
-          break
-        }
-        default: {
-          const _exhaustiveCheck: never = method
-          throw new Error(`Not implemented methods: ${_exhaustiveCheck}`)
-        }
-      }
-    })
-  })
+      })
+    },
+  )

@@ -2,23 +2,20 @@
   "name": "functions",
   "scripts": {
     "format": "biome format . --write",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start",
     "shell": "npm run build && firebase functions:shell",
-    "start": "node dist/index.js",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log",
     "generate-openapi": "ts-node --project tsconfig.json -r tsconfig-paths/register --files src/libs/openapi/Generator.ts",
     "prisma:generate": "npx prisma generate --schema ./src/libs/prisma/schema.prisma",
-    "prisma:migrate:dev": "npx prisma migrate dev --schema ./src/libs/prisma/schema.prisma && npm run prisma:generate",
-    "test": "jest",
-    "test:api": "jest --config ./tests/jest.api.config.js",
-    "test:watch": "npm run test:api -- --watch",
-    "predeploy": "npm run prisma:generate && npm run build"
+    "prisma:migrate": "npx prisma migrate dev --schema ./src/libs/prisma/schema.prisma",
+    "prisma:migrate:prod": "dotenv -e .env.production -- npm run prisma:migrate",
+    "copy-prisma": "mkdir -p ./dist/libs/prisma && cp ./src/libs/prisma/schema.prisma ./dist/libs/prisma/schema.prisma",
+    "build": "rm -rf ./dist && tsc && npm run prisma:generate && npm run copy-prisma",
+    "serve": "cp .env.local .env && firebase use develop && npm run build && firebase emulators:start --project develop",
+    "predeploy:prod": "cp .env.production .env && npm run build",
+    "deploy:prod": "firebase use production && firebase deploy --project production --only functions,auth",
+    "postinstall": "npx prisma generate --schema ./dist/libs/prisma/schema.prisma"
   },
   "engines": {
-    "node": "18"
+    "node": "22"
   },
   "main": "dist/index.js",
   "_moduleAliases": {
@@ -29,22 +26,18 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "firebase-admin": "^13.0.2",
-    "firebase-functions": "^6.2.0",
+    "firebase-functions": "^6.3.0",
     "module-alias": "^2.2.3",
-    "zod": "^3.24.1",
-    "express": "^4.17.1"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",
     "@biomejs/biome": "^1.9.4",
-    "@firebase/testing": "^0.20.11",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.6",
-    "firebase-functions-test": "^3.4.0",
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0",
+    "dotenv-cli": "^8.0.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "type-fest": "^4.32.0",
@@ -52,6 +45,6 @@
   },
   "private": true,
   "volta": {
-    "node": "18.20.4"
+    "node": "22.13.0"
   }
 }
