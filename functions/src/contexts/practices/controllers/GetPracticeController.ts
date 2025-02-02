@@ -12,7 +12,7 @@ const schema = {
   resBody: z.array(
     z.object({
       id: z.number(),
-      practiceType: z.enum(['MimiChat', 'HasegawaLike']),
+      practiceType: z.enum(['FreeChatFormat', 'MimiChat', 'HasegawaLike']),
       practice: z.string(),
       latestScore: z.number().optional(),
     }),

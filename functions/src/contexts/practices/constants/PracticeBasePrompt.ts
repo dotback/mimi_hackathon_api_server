@@ -8,8 +8,10 @@ const PromptPrefix = `
 export const PracticeBasePrompts = {
   mimiChat: {
     practice: {
-      of: (settings: string, userProfile: User['profile']) => `
+      of: (prompt: string, userProfile: User['profile']) => `
 ${PromptPrefix}
+条件: ${prompt}
+ユーザー情報: ${JSON.stringify(userProfile)}
 `,
       fromHasegawa: (hasegawaScore: number, userProfile: User['profile']) => `
 ${PromptPrefix}

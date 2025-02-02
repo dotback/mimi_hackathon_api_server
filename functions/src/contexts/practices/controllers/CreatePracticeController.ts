@@ -11,7 +11,8 @@ const schema = {
   pathParams: z.object({}),
   queryParams: z.object({}),
   reqBody: z.object({
-    mode: z.enum(['MimiChat', 'HasegawaLike']),
+    mode: z.enum(['MimiChat', 'HasegawaLike', 'FreeChatFormat']),
+    prompt: z.string().optional(),
   }),
   resBody: z.object({
     id: z.number(),
@@ -64,10 +65,21 @@ export class CreatePracticeController extends AuthenticatedController<ReqBody, R
     body: ReqBody,
     context: AuthenticatedRequestContext,
   ): Promise<{ status: ResCode; body: ResBody | ErrorResBody }> {
-    const prompt = PracticeBasePrompts.mimiChat.practice.fromHasegawa(
-      context.user.scores.hasegawa || 15,
-      context.user.profile,
-    )
+    let prompt: string
+    if (body.mode === 'MimiChat') {
+      prompt = PracticeBasePrompts.mimiChat.practice.fromHasegawa(
+        context.user.scores.hasegawa || 15,
+        context.user.profile,
+      )
+    } else if (body.mode === 'HasegawaLike') {
+      // TBC
+      throw new Error('Not implemented')
+    } else if (body.mode === 'FreeChatFormat') {
+      prompt = PracticeBasePrompts.mimiChat.practice.of(body.prompt || '', context.user.profile)
+    } else {
+      const _exhaustiveCheck: never = body.mode
+      throw new Error(`Unexpected mode: ${_exhaustiveCheck}`)
+    }
     const practice = await this.chatAI.generate(prompt)
     const record = await this.db.writer.userPractice.create({
       data: {

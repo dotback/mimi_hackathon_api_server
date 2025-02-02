@@ -1,6 +1,7 @@
-export type Practices = 'MimiChat' | 'HasegawaLike'
+export type Practices = 'MimiChat' | 'FreeChatFormat' | 'HasegawaLike'
 export const Practices = {
-  MimiChat: 0,
+  FreeChatFormat: 0,
+  MimiChat: 1,
   HasegawaLike: 100,
 } as const satisfies { [key in Practices]: number }
 export namespace Practice {
