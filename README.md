@@ -36,7 +36,7 @@
 1. DBの設定
     ```
     $ docker compose up -d
-    $ npm run prisma:migrate:dev
+    $ npm run prisma:migrate
     ```
 
 ## 開発
@@ -45,8 +45,10 @@ WIP
 
 ### エミュレータの起動
 ```
+$ npm run build:watch # watch modeで実行したい場合別ターミナルでこれ実行、なくても良い
 $ npm run serve
 ```
+
 
 `http://127.0.0.1:5001/mimi-dev-c7ee3/us-central1/hello` にブラウザでアクセスしてHello, World!が表示されたら成功  
 期待されるレスポンス：
@@ -65,7 +67,7 @@ functions/
 │   │   ├── common       # 共通コンテキスト
 │   │   ├── system
 │   │   └── users        # ユーザーコンテキスト
-│   ├── libs
+│   ├── shared
 │   │   ├── database     # prismaの初期化とか
 │   │   ├── openapi
 │   │   ├── prisma       # Schema定義とか
