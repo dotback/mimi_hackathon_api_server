@@ -42,7 +42,7 @@ CREATE TABLE "UserPractice" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "practiceType" INTEGER NOT NULL,
-    "practice" JSONB NOT NULL,
+    "practice" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -54,7 +54,7 @@ CREATE TABLE "UserPracticeAnswerHistory" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "practiceId" INTEGER NOT NULL,
-    "answer" JSONB NOT NULL,
+    "answer" TEXT NOT NULL,
     "score" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

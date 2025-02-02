@@ -3,7 +3,7 @@ import { ResCodeOf } from '@mimi-api/contexts/common/controllers/types/ReqRes'
 import { IUserRepository } from '@mimi-api/contexts/common/repositories/IUserRepository'
 import { NoAuthRequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
 import { Prefecture } from '@mimi-api/contexts/common/types/Prefecture'
-import { commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
+import { ErrorResBody, commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
 
 import { z } from 'zod'
 
@@ -53,14 +53,16 @@ type ReqBody = z.infer<typeof schema.reqBody>
 type ResBody = z.infer<typeof schema.resBody>
 type ResCode = ResCodeOf<typeof openApiSpec>
 
-// WIP
 export class CreateUserController extends BasicController<ReqBody, ResBody, ResCode> {
   openApiSpec = openApiSpec
   constructor(private readonly userRepository: IUserRepository) {
     super(schema)
   }
 
-  protected async _execute(body: ReqBody, context: NoAuthRequestContext): Promise<{ status: ResCode; body: ResBody }> {
+  protected async _execute(
+    body: ReqBody,
+    context: NoAuthRequestContext,
+  ): Promise<{ status: ResCode; body: ResBody | ErrorResBody }> {
     const firebaseUser = await this.verifyAuth(context.headers)
     if (!firebaseUser) {
       return {

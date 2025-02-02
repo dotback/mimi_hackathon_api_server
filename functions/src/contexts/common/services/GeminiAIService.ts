@@ -6,7 +6,6 @@ export class GeminiAIService implements IChatAIService {
 
   async generate(prompt: string): Promise<string> {
     const response = (await this.model.generateContent(prompt)).response
-
     return response.text().replace(/はい、承知いたしました。\n\n/g, '')
   }
 }

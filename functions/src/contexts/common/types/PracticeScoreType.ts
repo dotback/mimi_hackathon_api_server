@@ -1,11 +1,14 @@
 export type Practices = 'MimiChat' | 'HasegawaLike'
 export const Practices = {
   MimiChat: 0,
-  HasegawaLike: 1,
+  HasegawaLike: 100,
 } as const satisfies { [key in Practices]: number }
 export namespace Practice {
   export function of(practice: Practices): (typeof Practices)[Practices] {
     return Practices[practice]
+  }
+  export function from(value: number): Practices {
+    return Object.keys(Practices).find(key => Practices[key as Practices] === value) as Practices
   }
 }
 

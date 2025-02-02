@@ -51,7 +51,7 @@ model UserPractice {
   id           Int      @id @default(autoincrement())
   userId       Int
   practiceType Int
-  practice     Json
+  practice     String   @db.Text
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -63,7 +63,7 @@ model UserPracticeAnswerHistory {
   id         Int      @id @default(autoincrement())
   userId     Int
   practiceId Int
-  answer     Json
+  answer     String   @db.Text
   score      Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

@@ -1,6 +1,7 @@
 import { userRepository } from '@mimi-api/contexts/common'
 import { BasicController } from '@mimi-api/contexts/common/controllers/basic/BasicController'
 import { AuthenticatedRequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
+import { ErrorResBody } from '@mimi-api/shared/openapi/CommonErrorSchema'
 import type { Response } from 'express'
 import type { Request } from 'firebase-functions/v2/https'
 
@@ -29,5 +30,5 @@ export abstract class AuthenticatedController<TRequest, TResponse, TResCode exte
   protected abstract _execute(
     req: TRequest,
     context: AuthenticatedRequestContext,
-  ): Promise<{ status: TResCode; body: TResponse }>
+  ): Promise<{ status: TResCode; body: TResponse | ErrorResBody }>
 }

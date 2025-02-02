@@ -4,7 +4,7 @@ import { AuthenticatedRequestContext } from '@mimi-api/contexts/common/requestCo
 import { IChatAIService } from '@mimi-api/contexts/common/services/IChatAIService'
 import { Practice } from '@mimi-api/contexts/common/types/PracticeScoreType'
 import { PracticeBasePrompts } from '@mimi-api/contexts/practices/constants/PracticeBasePrompt'
-import { commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
+import { ErrorResBody, commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
 import { z } from 'zod'
 
 const schema = {
@@ -60,8 +60,14 @@ export class CreatePracticeController extends AuthenticatedController<ReqBody, R
     super(schema)
   }
 
-  async _execute(body: ReqBody, context: AuthenticatedRequestContext): Promise<{ status: ResCode; body: ResBody }> {
-    const prompt = PracticeBasePrompts.MimiChat.fromHasegawa(context.user.scores.hasegawa || 15, context.user.profile)
+  async _execute(
+    body: ReqBody,
+    context: AuthenticatedRequestContext,
+  ): Promise<{ status: ResCode; body: ResBody | ErrorResBody }> {
+    const prompt = PracticeBasePrompts.mimiChat.practice.fromHasegawa(
+      context.user.scores.hasegawa || 15,
+      context.user.profile,
+    )
     const practice = await this.chatAI.generate(prompt)
     const record = await this.db.writer.userPractice.create({
       data: {
