@@ -4,18 +4,17 @@ import { IBasicController } from '@mimi-api/contexts/common/controllers/IBasicCo
 import { ReqResSchema } from '@mimi-api/contexts/common/controllers/types/ReqRes'
 import { NoAuthRequestContext, RequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
 import { FirebaseUid } from '@mimi-api/contexts/common/types/id'
-import { db } from '@mimi-api/libs/database/prisma'
-import { ErrorCodes, ErrorResBody } from '@mimi-api/libs/openapi/CommonErrorSchema'
-import { IOpenApiSpec } from '@mimi-api/libs/openapi/IOpenApiSpec'
-import { handleError } from '@mimi-api/libs/utils/Error'
-import { PrismaClient } from '@prisma/client'
+import { DBClient, db } from '@mimi-api/shared/database/prisma'
+import { ErrorCodes, ErrorResBody } from '@mimi-api/shared/openapi/CommonErrorSchema'
+import { IOpenApiSpec } from '@mimi-api/shared/openapi/IOpenApiSpec'
+import { handleError } from '@mimi-api/shared/utils/Error'
 import type { Response } from 'express'
 import type { Request } from 'firebase-functions/v2/https'
 
 export abstract class BasicController<TRequest, TResponse, TResCode extends number> implements IBasicController {
   abstract openApiSpec: IOpenApiSpec
   protected firebase: ReturnType<typeof getFirebaseAdmin>
-  protected db: PrismaClient
+  protected db: DBClient
 
   constructor(private readonly schema: ReqResSchema) {
     try {

@@ -4,7 +4,7 @@ import { onRequest } from 'firebase-functions/v2/https'
 
 const corsOptions = {
   origin: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
   optionsSuccessStatus: 204,
@@ -14,6 +14,7 @@ export const requestHandlers = (executors: {
   get?: IBasicController
   post?: IBasicController
   put?: IBasicController
+  patch?: IBasicController
   delete?: IBasicController
 }) =>
   onRequest(

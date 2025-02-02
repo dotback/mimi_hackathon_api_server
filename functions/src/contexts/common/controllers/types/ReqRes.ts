@@ -1,4 +1,4 @@
-import { IOpenApiSpec } from '@mimi-api/libs/openapi/IOpenApiSpec'
+import { IOpenApiSpec } from '@mimi-api/shared/openapi/IOpenApiSpec'
 import { ZodTypeAny } from 'zod'
 
 export type ReqResSchema = {

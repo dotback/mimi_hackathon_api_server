@@ -3,16 +3,17 @@
   "scripts": {
     "format": "biome format . --write",
     "shell": "npm run build && firebase functions:shell",
-    "generate-openapi": "ts-node --project tsconfig.json -r tsconfig-paths/register --files src/libs/openapi/Generator.ts",
-    "prisma:generate": "npx prisma generate --schema ./src/libs/prisma/schema.prisma",
-    "prisma:migrate": "npx prisma migrate dev --schema ./src/libs/prisma/schema.prisma",
+    "generate-openapi": "ts-node --project tsconfig.json -r tsconfig-paths/register --files src/shared/openapi/Generator.ts",
+    "prisma:generate": "npx prisma generate --schema ./src/shared/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema ./src/shared/prisma/schema.prisma",
     "prisma:migrate:prod": "dotenv -e .env.production -- npm run prisma:migrate",
-    "copy-prisma": "mkdir -p ./dist/libs/prisma && cp ./src/libs/prisma/schema.prisma ./dist/libs/prisma/schema.prisma",
+    "copy-prisma": "mkdir -p ./dist/shared/prisma && cp ./src/shared/prisma/schema.prisma ./dist/shared/prisma/schema.prisma",
     "build": "rm -rf ./dist && tsc && npm run prisma:generate && npm run copy-prisma",
+    "build:watch": "tsc -w --preserveWatchOutput",
     "serve": "cp .env.local .env && firebase use develop && npm run build && firebase emulators:start --project develop",
     "predeploy:prod": "cp .env.production .env && npm run build",
     "deploy:prod": "firebase use production && firebase deploy --project production --only functions,auth",
-    "postinstall": "npx prisma generate --schema ./dist/libs/prisma/schema.prisma"
+    "postinstall": "npx prisma generate --schema ./dist/shared/prisma/schema.prisma"
   },
   "engines": {
     "node": "22"
@@ -22,6 +23,8 @@
     "@mimi-api": "dist"
   },
   "dependencies": {
+    "@google-cloud/vision": "^4.3.2",
+    "@google/generative-ai": "^0.21.0",
     "@prisma/client": "^6.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -38,10 +41,12 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.6",
     "dotenv-cli": "^8.0.0",
+    "firebase-functions-test": "^3.4.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "type-fest": "^4.32.0",
-    "typescript": "^5.7.3"
+    "type-fest": "^4.33.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.4"
   },
   "private": true,
   "volta": {

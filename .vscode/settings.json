@@ -17,6 +17,7 @@
     "asteasolutions",
     "eventarc",
     "FIRESTORE",
+    "hasegawa",
     "nodenext"
   ],
   "editor.defaultFormatter": "biomejs.biome",

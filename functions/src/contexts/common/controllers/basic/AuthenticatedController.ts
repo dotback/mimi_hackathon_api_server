@@ -1,6 +1,6 @@
+import { userRepository } from '@mimi-api/contexts/common'
 import { BasicController } from '@mimi-api/contexts/common/controllers/basic/BasicController'
 import { AuthenticatedRequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
-import { FirebaseUid, UserId } from '@mimi-api/contexts/common/types/id'
 import type { Response } from 'express'
 import type { Request } from 'firebase-functions/v2/https'
 
@@ -17,35 +17,10 @@ export abstract class AuthenticatedController<TRequest, TResponse, TResCode exte
     }
     console.log('firebaseUser', firebaseUser)
 
-    const userRecord = await this.db.users.findUnique({
-      select: {
-        id: true,
-        firebaseUid: true,
-        username: true,
-        email: true,
-        gender: true,
-        Prefecture: {
-          select: {
-            name: true,
-          },
-        },
-      },
-      where: {
-        firebaseUid: firebaseUser.firebaseUid,
-      },
-    })
-    if (!userRecord) {
+    const user = await userRepository.find({ firebaseUid: firebaseUser.firebaseUid })
+    if (!user) {
       res.status(404).json({ error: { message: 'User not found' } })
       return
-    }
-
-    const user = {
-      id: UserId(userRecord.id),
-      firebaseUid: FirebaseUid(firebaseUser.firebaseUid),
-      username: userRecord.username,
-      gender: userRecord.gender,
-      email: firebaseUser.email,
-      prefecture: userRecord.Prefecture?.name,
     }
     const { status, body } = await this.executeContainer(req, { headers: req.headers, user })
     res.status(status).json(body)

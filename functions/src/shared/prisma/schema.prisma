@@ -1,0 +1,72 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin"]
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  firebaseUid  String   @unique
+  email        String
+  username     String
+  gender       String
+  birthDate    DateTime
+  prefectureId Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ExternalScores         ExternalScore[]
+  ExternalScoreHistories ExternalScoreHistory[]
+  UserPractices          UserPractice[]
+}
+
+model ExternalScore {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  scoreType Int
+  score     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Users     User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, scoreType])
+}
+
+model ExternalScoreHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  scoreType Int
+  score     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Users User @relation(fields: [userId], references: [id])
+}
+
+model UserPractice {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  practiceType Int
+  practice     Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  User                        User                        @relation(fields: [userId], references: [id])
+  UserPracticeAnswerHistories UserPracticeAnswerHistory[]
+}
+
+model UserPracticeAnswerHistory {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  practiceId Int
+  answer     Json
+  score      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  UserPractice UserPractice @relation(fields: [practiceId], references: [id])
+}

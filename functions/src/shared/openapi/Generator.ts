@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { OpenAPIRegistry, OpenApiGeneratorV31, type RouteConfig } from '@asteasolutions/zod-to-openapi'
 import { allSpecs } from '@mimi-api/contexts/common/controllers/AllControllersSpecs'
-import { IOpenApiSpec } from '@mimi-api/libs/openapi/IOpenApiSpec'
+import { IOpenApiSpec } from '@mimi-api/shared/openapi/IOpenApiSpec'
 
 const convertToRouteConfig = (spec: IOpenApiSpec): RouteConfig => {
   return {

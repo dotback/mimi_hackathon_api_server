@@ -1,6 +1,6 @@
 import { BasicController } from '@mimi-api/contexts/common/controllers/basic/BasicController'
 import { ResCodeOf } from '@mimi-api/contexts/common/controllers/types/ReqRes'
-import { commonErrorSchema } from '@mimi-api/libs/openapi/CommonErrorSchema'
+import { commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
 import { z } from 'zod'
 
 const schema = {
