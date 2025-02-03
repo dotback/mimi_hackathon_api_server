@@ -41,7 +41,10 @@
 
 ## 開発
 ### デプロイ
-WIP
+```
+# package.jsonに加える
+    "postinstall": "npx prisma generate --schema ./dist/shared/prisma/schema.prisma" // for deploy
+```
 
 ### エミュレータの起動
 ```
