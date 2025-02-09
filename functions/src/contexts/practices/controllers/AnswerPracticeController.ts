@@ -1,9 +1,12 @@
 import { AuthenticatedController } from '@mimi-api/contexts/common/controllers/basic/AuthenticatedController'
 import { ResCodeOf } from '@mimi-api/contexts/common/controllers/types/ReqRes'
 import { AuthenticatedRequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
-import { IChatAIService } from '@mimi-api/contexts/common/services/IChatAIService'
+import { IChatPracticeService } from '@mimi-api/contexts/common/services/IGeneratingChatPracticeService'
 import { UserPracticeId } from '@mimi-api/contexts/common/types/id'
-import { PracticeBasePrompts } from '@mimi-api/contexts/practices/constants/PracticeBasePrompt'
+import {
+  AnalyzingPracticePrompts,
+  CreatingPracticePrompts,
+} from '@mimi-api/contexts/practices/constants/PracticeBasePrompt'
 import { ErrorResBody, commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
 import { z } from 'zod'
 
@@ -12,7 +15,7 @@ const schema = {
   queryParams: z.object({}),
   reqBody: z.object({
     id: z.number().transform(UserPracticeId),
-    answer: z.string(),
+    answer: z.record(z.string()),
     createNextPractice: z
       .boolean()
       .optional()
@@ -20,7 +23,8 @@ const schema = {
   }),
   resBody: z.object({
     id: z.number(),
-    analytics: z.string(),
+    score: z.number(),
+    analysis: z.string(),
   }),
 }
 
@@ -61,7 +65,7 @@ type ResCode = ResCodeOf<typeof openApiSpec>
 export class AnswerPracticeController extends AuthenticatedController<ReqBody, ResBody, ResCode> {
   openApiSpec = openApiSpec
 
-  constructor(private readonly chatAI: IChatAIService) {
+  constructor(private readonly chatPractice: IChatPracticeService) {
     super(schema)
   }
 
@@ -69,12 +73,6 @@ export class AnswerPracticeController extends AuthenticatedController<ReqBody, R
     body: ReqBody,
     context: AuthenticatedRequestContext,
   ): Promise<{ status: ResCode; body: ResBody | ErrorResBody }> {
-    if (body.answer === '') {
-      return {
-        status: 400,
-        body: { error: { message: 'Answer is required' } },
-      }
-    }
     const practiceRecord = await this.db.reader.userPractice.findUnique({ where: { id: body.id } })
     if (!practiceRecord) {
       return {
@@ -82,14 +80,12 @@ export class AnswerPracticeController extends AuthenticatedController<ReqBody, R
         body: { error: { message: 'Practice not found' } },
       }
     }
-    const answerPrompt = PracticeBasePrompts.mimiChat.answer.of(practiceRecord.practice, body.answer)
-    const answerChatResponse = await this.chatAI.generate(answerPrompt)
-    const scoreMatched = answerChatResponse.match(/スコア: (\d+)/)
-    const score = scoreMatched ? Number.parseInt(scoreMatched[1], 10) : undefined
-    if (!score) {
-      // :cry:
-      throw new Error('Failed to parse score')
-    }
+    const answerPrompt = AnalyzingPracticePrompts.mimiChat.answer.of(
+      JSON.stringify(practiceRecord.practice),
+      JSON.stringify(body.answer),
+    )
+    const analyzed = await this.chatPractice.analyze(answerPrompt)
+    const score = analyzed.score
     await this.db.writer.userPracticeAnswerHistory.create({
       data: {
         userId: context.user.id,
@@ -101,16 +97,16 @@ export class AnswerPracticeController extends AuthenticatedController<ReqBody, R
 
     // 次の問題を作成
     if (body.createNextPractice) {
-      const nextPracticePrompt = PracticeBasePrompts.mimiChat.practice.fromPracticeResult(
-        practiceRecord.practice,
-        body.answer,
+      const nextPracticePrompt = CreatingPracticePrompts.mimiChat.practice.fromPracticeResult(
+        JSON.stringify(practiceRecord.practice),
+        JSON.stringify(body.answer),
         context.user.profile,
       )
       await this.db.writer.userPractice.create({
         data: {
           userId: context.user.id,
           practiceType: practiceRecord.practiceType,
-          practice: await this.chatAI.generate(nextPracticePrompt),
+          practice: await this.chatPractice.generate(nextPracticePrompt),
         },
       })
     }
@@ -119,7 +115,8 @@ export class AnswerPracticeController extends AuthenticatedController<ReqBody, R
       status: 200,
       body: {
         id: body.id,
-        analytics: answerChatResponse,
+        score: analyzed.score,
+        analysis: analyzed.analysis,
       },
     }
   }

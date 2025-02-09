@@ -1,5 +1,6 @@
 import { AuthenticatedController } from '@mimi-api/contexts/common/controllers/basic/AuthenticatedController'
 import { ResCodeOf } from '@mimi-api/contexts/common/controllers/types/ReqRes'
+import { PurePractice } from '@mimi-api/contexts/common/entities/PurePractice'
 import { AuthenticatedRequestContext } from '@mimi-api/contexts/common/requestContext/RequestContext'
 import { Practice } from '@mimi-api/contexts/common/types/PracticeScoreType'
 import { ErrorResBody, commonErrorSchema } from '@mimi-api/shared/openapi/CommonErrorSchema'
@@ -13,7 +14,7 @@ const schema = {
     z.object({
       id: z.number(),
       practiceType: z.enum(['FreeChatFormat', 'MimiChat', 'HasegawaLike']),
-      practice: z.string(),
+      practice: z.record(z.string()),
       latestScore: z.number().optional(),
     }),
   ),
@@ -88,7 +89,7 @@ export class GetPracticeController extends AuthenticatedController<ReqBody, ResB
       body: practices.map(practice => ({
         id: practice.id,
         practiceType: Practice.from(practice.practiceType),
-        practice: practice.practice,
+        practice: practice.practice as PurePractice,
         latestScore: practice.UserPracticeAnswerHistories[0]?.score,
       })),
     }
