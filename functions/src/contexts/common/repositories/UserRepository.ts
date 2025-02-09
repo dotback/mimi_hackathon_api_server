@@ -11,6 +11,7 @@ type RowUserModel = {
     include: {
       ExternalScores: true
       ExternalScoreHistories: true
+      UserProfile: true
       UserPractices: {
         include: {
           UserPracticeAnswerHistories: true
@@ -29,6 +30,7 @@ export class UserRepository implements IUserRepository {
       include: {
         ExternalScores: true,
         ExternalScoreHistories: true,
+        UserProfile: true,
         UserPractices: {
           include: {
             UserPracticeAnswerHistories: true,
@@ -56,6 +58,7 @@ export class UserRepository implements IUserRepository {
       include: {
         ExternalScores: true,
         ExternalScoreHistories: true,
+        UserProfile: true,
         UserPractices: {
           include: {
             UserPracticeAnswerHistories: true,
@@ -71,7 +74,20 @@ export class UserRepository implements IUserRepository {
 
   async create(user: CreateUser): Promise<UserId> {
     const record = await this.db.writer.user.create({
-      data: user,
+      data: {
+        firebaseUid: user.firebaseUid,
+        UserProfile: {
+          create: {
+            username: user.username,
+            email: user.email,
+            gender: user.gender,
+            birthDate: user.birthDate,
+            exerciseHabit: user.exerciseHabit,
+            sleepHours: user.sleepHours,
+            prefectureId: user.prefectureId,
+          },
+        },
+      },
     })
     return UserId(record.id)
   }
@@ -94,7 +110,19 @@ export class UserRepository implements IUserRepository {
       where: {
         id: userId,
       },
-      data: user,
+      data: {
+        UserProfile: {
+          update: {
+            username: user.username,
+            email: user.email,
+            gender: user.gender,
+            exerciseHabit: user.exerciseHabit,
+            sleepHours: user.sleepHours,
+            birthDate: user.birthDate,
+            prefectureId: user.prefecture !== undefined ? Prefecture.of(user.prefecture) : undefined,
+          },
+        },
+      },
     })
   }
 
@@ -141,11 +169,15 @@ export class UserRepository implements IUserRepository {
     return {
       id: UserId(user.id),
       profile: {
-        username: user.username,
-        email: user.email,
-        gender: user.gender,
-        birthDate: user.birthDate,
-        prefecture: Prefecture.from(user.prefectureId as PrefectureValues) || Object.keys(Prefecture.getDefault())[0],
+        username: user.UserProfile?.username ?? '',
+        email: user.UserProfile?.email ?? '',
+        gender: user.UserProfile?.gender ?? '',
+        exerciseHabit: user.UserProfile?.exerciseHabit ?? '',
+        sleepHours: (user.UserProfile?.sleepHours ?? 0) as number,
+        birthDate: user.UserProfile?.birthDate ?? new Date(),
+        prefecture:
+          Prefecture.from((user.UserProfile?.prefectureId || 0) as PrefectureValues) ||
+          Object.keys(Prefecture.getDefault())[0],
       },
       scores,
     }
