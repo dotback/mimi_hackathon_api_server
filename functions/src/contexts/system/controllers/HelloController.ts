@@ -56,7 +56,7 @@ export class HelloController extends BasicController<ReqBody, ResBody, ResCode> 
     return {
       status: 200,
       body: {
-        message: 'Hello, World!',
+        message: `Hello, World!, ${process.env.ENV}`,
       },
     }
   }

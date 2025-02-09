@@ -12,7 +12,8 @@
     "build:watch": "tsc -w --preserveWatchOutput",
     "serve": "cp .env.local .env && firebase use develop && npm run build && firebase emulators:start --project develop",
     "predeploy:prod": "cp .env.production .env && npm run build",
-    "deploy:prod": "firebase use production && firebase deploy --project production --only functions,auth"
+    "deploy:prod": "firebase use production && firebase deploy --project production --only functions,auth",
+    "postinstall": "[ \"$ENV\" != \"local\" ] && npx prisma generate --schema \"./dist/shared/prisma/schema.prisma\" || exit 0"
   },
   "engines": {
     "node": "22"

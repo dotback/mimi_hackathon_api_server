@@ -71,6 +71,10 @@ export class CreateUserController extends BasicController<ReqBody, ResBody, ResC
       }
     }
 
+    console.log('this.db.reader')
+    console.log(this.db.reader)
+    console.log('this.db.reader')
+
     const user = await this.userRepository.find({ firebaseUid: firebaseUser.firebaseUid })
     if (user) {
       return {
