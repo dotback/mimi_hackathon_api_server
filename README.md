@@ -33,11 +33,18 @@
     $ npm install
     ```
 
+1. 環境変数の設定
+    ```
+    $ cp .env.sample .env
+    $ vi .env # Gemini api keyを設定
+    ```
+
 1. DBの設定
     ```
     $ docker compose up -d
     $ npm run prisma:migrate
     ```
+
 
 ## 開発
 ### デプロイ
