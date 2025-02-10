@@ -37,6 +37,7 @@
     ```
     $ cp .env.sample .env
     $ vi .env # Gemini api keyを設定
+    $ cp .env .env.local
     ```
 
 1. DBの設定
@@ -45,6 +46,10 @@
     $ npm run prisma:migrate
     ```
 
+1. エミュレータの起動
+    ```
+    $ npm run serve
+    ```
 
 ## 開発
 ### デプロイ
