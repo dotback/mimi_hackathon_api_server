@@ -12,6 +12,8 @@ const schema = {
   queryParams: z.object({}),
   reqBody: z.object({
     username: z.string().min(3).optional(),
+    exerciseHabit: z.string().optional(),
+    sleepHours: z.number().optional(),
     prefecture: z
       .string()
       .transform(v => v.toLowerCase())
@@ -74,6 +76,8 @@ export class PatchUserController extends AuthenticatedController<ReqBody, ResBod
       profile: {
         username: req.username,
         prefecture: req.prefecture,
+        exerciseHabit: req.exerciseHabit,
+        sleepHours: req.sleepHours,
       },
       scores: req.scores
         ? {

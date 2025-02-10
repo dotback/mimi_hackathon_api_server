@@ -12,8 +12,10 @@ const schema = {
   queryParams: z.object({}),
   reqBody: z.object({
     username: z.string().min(4),
-    gender: z.enum(['male', 'female', 'other']),
+    gender: z.enum(['男性', '女性', 'その他']),
     birthDate: z.string().pipe(z.coerce.date()),
+    exerciseHabit: z.string(),
+    sleepHours: z.number(),
     prefecture: z.string().transform(v => v.toLowerCase()),
   }),
   resBody: z.object({}),
@@ -71,10 +73,6 @@ export class CreateUserController extends BasicController<ReqBody, ResBody, ResC
       }
     }
 
-    console.log('this.db.reader')
-    console.log(this.db.reader)
-    console.log('this.db.reader')
-
     const user = await this.userRepository.find({ firebaseUid: firebaseUser.firebaseUid })
     if (user) {
       return {
@@ -88,6 +86,8 @@ export class CreateUserController extends BasicController<ReqBody, ResBody, ResC
       username: body.username,
       email: firebaseUser.email,
       gender: body.gender,
+      exerciseHabit: body.exerciseHabit,
+      sleepHours: body.sleepHours,
       birthDate: body.birthDate,
       prefectureId: Prefecture.of(body.prefecture),
     })

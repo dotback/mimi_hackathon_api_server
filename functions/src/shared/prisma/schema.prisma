@@ -11,17 +11,29 @@ generator client {
 model User {
   id           Int      @id @default(autoincrement())
   firebaseUid  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  UserProfile            UserProfile?
+  ExternalScores         ExternalScore[]
+  ExternalScoreHistories ExternalScoreHistory[]
+  UserPractices          UserPractice[]
+}
+
+model UserProfile {
+  id        Int      @id @default(autoincrement())
+  userId    Int @unique
   email        String
   username     String
   gender       String
   birthDate    DateTime
+  exerciseHabit String
+  sleepHours Decimal
   prefectureId Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  ExternalScores         ExternalScore[]
-  ExternalScoreHistories ExternalScoreHistory[]
-  UserPractices          UserPractice[]
+  User User @relation(fields: [userId], references: [id])
 }
 
 model ExternalScore {

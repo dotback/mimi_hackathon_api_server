@@ -9,6 +9,8 @@ export type User = {
     email: string
     gender: string
     birthDate: Date
+    exerciseHabit: string
+    sleepHours: number
     prefecture: string
   }
   scores: {
@@ -16,7 +18,7 @@ export type User = {
   }
 }
 
-export type CreateUser = Pick<User['profile'], 'username' | 'email' | 'gender' | 'birthDate'> & {
+export type CreateUser = Omit<User['profile'], 'prefecture'> & {
   firebaseUid: FirebaseUid
   prefectureId: number
 }
